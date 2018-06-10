@@ -71,10 +71,6 @@ def atbash(message):
 
     return decoded
 
-
-
-
-
 def a1z26(message):
 
     decoded = ""
@@ -112,6 +108,21 @@ def a1z26(message):
 def combined(message):
     return caesar_3forward(atbash(a1z26(message)))
 
+#decode binary message, 8bits characters
+def binary(message):
+  result=""
+  s=message #temp variable for input string
+  n=len(s)//8 # number of letters in message  
+  b="00001000"# binary string of 8 bits  
+  for i in range(0,n):
+    b=s[0:8] #get first 8 bits    
+    result+=chr( int(b,2) ) # take b to int and then get ASCII value   
+    s=s[8:] #get rid of first 8 bits 
+  return result
+
+mensaje="01010000011101010111010000100000011000010110110001101100001000000111001101101001011110000010000001110000011010010110010101100011011001010111001100100000011101000110111101100111011001010111010001101000011001010111001000100001"
+print(binary(mensaje))
+print()
 
 mensaje = "PU. FDHVDULDQ ZLOO EH RXW QHAW ZHHN. PU. DWEDVK ZLOO VXEVWLWXWH. "
 print(caesar_3forward(mensaje))
