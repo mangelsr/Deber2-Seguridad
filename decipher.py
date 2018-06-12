@@ -1,3 +1,122 @@
+import re
+cryp_dict={
+1:"WELCOME TO GRAVITY FALLS.",
+2:"NEXT WEEK: RETURN TO BUTT ISLAND",
+3:"HE'S STILL IN THE VENTS.",
+4:"CARLA, WHY WON'T YOU CALL ME?",
+5:"ONWARDS AOSHIMA!",
+6:"MR. CAESARIAN WILL BE OUT NEXT WEEK. MR. ATBASH WILL SUBSTITUTE.", 
+7:"PAPER JAM DIPPER SAYS: 'AUUGHWXQHGADSADUH'", 
+8:"E. PLURIBUS TREMBLEY.", 
+9:"NOT H.G. WELLS APPROVED.",
+10:"SORRY, DIPPER, BUT YOUR WENDY IS IN ANOTHER CASTLE.",
+11:"THEINVISIBLEWIZARDISWATCHING.", 
+12:"BROUGHTTOYOUBYHOMEWORK:THECANDY",
+13:"HEAVY IS THE HEAD THAT WEARS THE FEZ",
+14:"NEXT UP: 'FOOTBOT TWO: GRUNKLE'S GREVENGE.'", 
+15:"VIVAN LOS PATOS DE LA PISCINA",
+16:"BUT WHO STOLE THE CAPERS?",
+17:"HAPPY NOW ARIEL?",
+20:"SEARCH FOR THE BLINDEYE"
+}
+
+def format_cryp_dict(cryp_dict):
+  for k in cryp_dict:
+    cryp_dict[k]=re.sub('[^A-Z]','',cryp_dict[k])
+  #print (str(cryp_dict))
+
+'''
+input: "[6)33,40,46 9)1,18] [10)32,33][39"
+output: 6)33,40,46,9)1,18 - 10)32,33 - 39
+
+where "-" denotes a whitespace
+'''
+def format_numeric_code(numeric_code):
+  #get rid of spaces between a number of letter and number of episod
+  replace=re.sub(' ',',',numeric_code)
+  #print(replace)
+  #replace a pair of ],[ by - denoting whitespace  
+  replace=re.sub('\],\[|\]\[',' - ',replace)
+  #print(replace)
+  #get rid of first and last []
+  replace=re.sub('\]|\[','',replace)
+  #print(replace)
+  return replace
+
+'''
+gen a dict with the number of chapters as keys and the
+number of letters that will taken from that chapter
+'''
+def gen_dict_episode_letters(numeric_code):
+  #these reg match any, one or two-digit number before of a parenthesis, gives a list of the number of the episodes
+  chapters=re.findall('\d?\d(?=\))',numeric_code)
+
+  replace=re.sub(' ',',',numeric_code)
+  #print(replace)
+  #replace a pair of ],[ by - denoting whitespace  
+  replace=re.sub('\],\[|\]\[',',-1,',replace)
+  #print(replace)
+  #get rid of first and last []
+  replace=re.sub('\]|\[','',replace)
+  #print(replace)
+  
+  #change the episodes by the symbol |
+  replace=re.sub('\d?\d\)','|',replace)
+  #get rid of the first |
+  replace=replace[1:]
+  #lists of strings that contain the number of the letters
+  replace_splitted=replace.split("|")
+  #print(replace_splitted)  
+  #create the dic
+  d={}
+  #print(str(chapters))
+  i=0
+  #the number of the strings corresponds to number of episodes
+  for s in replace_splitted:
+    s1=re.findall('\d\d?',s)
+    d[int(chapters[i])]=len(s1)  
+    #add one the index of the chapter, to access to the next one
+    i+=1
+  return d
+
+'''
+return a list of all numbers(in String) of positions of letters from
+the numeric_codem. 
+'''
+def getPositions(numeric_code):
+  replace=re.sub(' ',',',numeric_code)
+  #print(replace)
+  #replace a pair of ],[ by , denoting whitespace  
+  replace=re.sub('\],\[|\]\[',',-1,',replace)
+  #print(replace)
+  #get rid of first and last []
+  replace=re.sub('\]|\[','',replace)
+  #print(replace)
+  
+  #change the episodes by the symbol |
+  replace=re.sub('\d?\d\)','|',replace)
+  #print(replace)
+  #find all numbers
+  replace=re.findall('-?\d?\d',replace)
+  return replace
+
+def numeric_code(msg):
+  l=getPositions(msg) 
+  d=gen_dict_episode_letters(msg)
+  format_cryp_dict(cryp_dict)
+  s=""
+  for k in d.keys():
+    retrieve_crypto=cryp_dict[k]
+    for j in range(d[k]):    
+      if int(l[j])==-1:
+        s+=" " 
+      else:
+        s+=retrieve_crypto[int(l[j])-1]
+    l=l[d[k]:]
+  
+  return s
+
+
 def decodeVigenere(cipherText, key):
 
     pos = 0
@@ -229,3 +348,12 @@ print("SMOFZQA JDFV:", decodeVigenere("SMOFZQA JDFV", "WIDDLE"))
 print("OOIY DMEV VN IBWRKAMW BRUWLL:", decodeVigenere("OOIY DMEV VN IBWRKAMW BRUWLL", "SHIFTER"))
 
 print("YM’KL ECN PPK WFOM UBR KQVXNLK, DCI SIK’U VDA JFTOTA AYQ BWL VVCT \"EBTGGB BHWKGZH\" HVV: TMEASZFA LOS YCDT PRWKTIYEKGL DBV XQDTYRDGVI: ", decodeVigenere("YM’KL ECN PPK WFOM UBR KQVXNLK, DCI SIK’U VDA JFTOTA AYQ BWL VVCT \"EBTGGB BHWKGZH\" HVV: TMEASZFA LOS YCDT PRWKTIYEKGL DBV XQDTYRDGVI", "CIPHER"))
+
+var1="[13) 8,9,10] [14,17,22"
+var2= "[1)14] [2)5,24 3)3] [5)7,9]"
+var3="[6)33,40,46 9)1,18] [10)32,33][39"
+var4="[17)6,12 20) 3,4]" 
+var5="[14)21,30,32 15)13,20][22 16)20"
+var6="11)4,12,18] [12)8,9][17,18]"
+
+print(numeric_code(var2))
