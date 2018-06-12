@@ -1,4 +1,30 @@
 
+def decodeVigenere(cipherText, key):
+    decoded = ""
+    #to equals the lenghts
+    if( len(cipherText) > len(key) ):
+        n = ( len(cipherText)//len(key) ) + 1
+        key = key * n
+    #to move the itr in the key
+    pos = 0
+    #char by char
+    for character in cipherText:
+
+        cipherCharNum = ord(character)
+
+        #decoding: reverse the operation of the coding
+        decodedCharNum = cipherCharNum - ( ord( key [pos] ) - 65 )
+
+        #fix the position
+        if( decodedCharNum < 65 ):
+            decodedCharNum = 90 - ( 65 - decodedCharNum ) + 1
+
+        decoded += chr( decodedCharNum )
+        pos += 1
+
+    return decoded
+
+
 def caesar(message, steps):
     decoded = ""
     for character in message:
