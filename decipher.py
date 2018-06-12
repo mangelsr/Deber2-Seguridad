@@ -4,21 +4,23 @@ def decodeVigenere(cipherText, key):
     decoded = ""
 
     for character in cipherText:
+        if (ord(character)>=65 and ord(character)<=90):
+            cipherCharNum = ord(character)
+            #decoding : reverse the operation
+            decodedCharNum = cipherCharNum - ( ord( key [pos] ) - 65 )
 
-        cipherCharNum = ord(character)
-        #decoding : reverse the operation
-        decodedCharNum = cipherCharNum - ( ord( key [pos] ) - 65 )
+            #fix the position
+            if( decodedCharNum < 65 ):
+                decodedCharNum = 90 - ( 65 - decodedCharNum ) + 1
 
-        #fix the position
-        if( decodedCharNum < 65 ):
-            decodedCharNum = 90 - ( 65 - decodedCharNum ) + 1
+            decoded += chr( decodedCharNum )
 
-        decoded += chr( decodedCharNum )
-
-        if(pos == ( len(key) - 1 ) ):
-            pos=0
+            if(pos == ( len(key) - 1 ) ):
+                pos=0
+            else:
+                pos += 1
         else:
-            pos += 1
+            decoded += character
             
     return decoded
 
@@ -222,3 +224,8 @@ for k,v in episodes.items():
         for i in v:
             show_info(i)
     print()
+
+print("SMOFZQA JDFV:", decodeVigenere("SMOFZQA JDFV", "WIDDLE"))
+print("OOIY DMEV VN IBWRKAMW BRUWLL:", decodeVigenere("OOIY DMEV VN IBWRKAMW BRUWLL", "SHIFTER"))
+
+print("YM’KL ECN PPK WFOM UBR KQVXNLK, DCI SIK’U VDA JFTOTA AYQ BWL VVCT \"EBTGGB BHWKGZH\" HVV: TMEASZFA LOS YCDT PRWKTIYEKGL DBV XQDTYRDGVI: ", decodeVigenere("YM’KL ECN PPK WFOM UBR KQVXNLK, DCI SIK’U VDA JFTOTA AYQ BWL VVCT \"EBTGGB BHWKGZH\" HVV: TMEASZFA LOS YCDT PRWKTIYEKGL DBV XQDTYRDGVI", "CIPHER"))
